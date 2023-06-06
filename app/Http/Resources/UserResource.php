@@ -34,16 +34,19 @@ class UserResource extends JsonResource
           'name' => $this->name,
           'email' => $this->email,
           'isApproved' => $this->is_approved,
-          'emailVerified' => $this->email_verified_at,
+          'emailVerifiedAt' => $this->email_verified_at,
           'userType' => $userType,
           'bloodType' => new BloodTypeResource($this->bloodType),
           'gender' => new GenderResource($this->gender),
           ...($this->regularUser ? [
-            'educationalCertificates' => EducationalCertificateResource::collection($this->regularUser->educationalCertificates)
-            ] : [
-            'educationalCertificates' => []]
+            'educationalCertificates' => EducationalCertificateResource::collection($this->regularUser->educationalCertificates),
+            'roleAssignmentDate'=> $this->regularUser->created_at,
+            ] : []
           ),
-
+          ...($this->admin ? [
+            'roleAssignmentDate'=> $this->admin->created_at,
+            ] : []
+          ),
           'createdAt' => $this->created_at,
           'updatedAt' => $this->updated_at,
         ];

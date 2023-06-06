@@ -1,16 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\Admin;
-use Illuminate\Support\Facades\Auth;
-use Validator;
-use App\Models\EducationalCertificate;
-use App\Http\Resources\EducationalCertificateResource;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
-class EducationalCertificateController extends Controller
+use App\Http\Controllers\Controller;
+use App\Models\Gender;
+use App\Http\Resources\GenderResource;
+use Illuminate\Http\Request;
+
+class GenderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +15,8 @@ class EducationalCertificateController extends Controller
     public function index()
     {
         //
-        $educationalCertificates = EducationalCertificate::all();
-        return EducationalCertificateResource::collection($educationalCertificates);
+        $genders = Gender::all();
+        return GenderResource::collection($genders);
     }
 
     /**
@@ -33,7 +30,7 @@ class EducationalCertificateController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(EducationalCertificate::class),
+                Rule::unique(Gender::class),
                 //Rule::unique(User::class),
             ],
         ])->validate();
@@ -41,15 +38,15 @@ class EducationalCertificateController extends Controller
         if(!$adminExists){
             return response()->json(["errors" => ["Unauthorized" => "You are not an admin"]], 401);
         }
-        // $educationalCertificateExists = EducationalCertificate::where('name', $request->input('name') )->exists();
-        // if($educationalCertificateExists){
-        //     return response()->json(["errors" => ["message" => "EducationalCertificate already exist"]], 409);
+        // $genderExists = Gender::where('name', $request->input('name') )->exists();
+        // if($genderExists){
+        //     return response()->json(["errors" => ["message" => "Gender already exist"]], 409);
         // }
-        $educationalCertificateCreate = EducationalCertificate::create([
+        $genderCreate = Gender::create([
             "name" => $request->name,
         ]);
-        if($educationalCertificateCreate){
-            return new EducationalCertificateResource($educationalCertificateCreate);
+        if($genderCreate){
+            return new GenderResource($genderCreate);
         }
     }
 
@@ -76,37 +73,25 @@ class EducationalCertificateController extends Controller
             'id' => [
                 'required',
                 'integer',
-                'exists:App\Models\EducationalCertificate,id',
+                'exists:App\Models\Gender,id',
                 // 'exists:educational_certificates,id',
             ],
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(EducationalCertificate::class)->ignore($id),
+                Rule::unique(Gender::class)->ignore($id),
                 //Rule::unique('educational_certificates')->ignore($id)
             ],
         ])->validate();
 
-        // $exists = EducationalCertificate::where('name', $request->input('name') )
-        //     ->where('id','<>', $id )
-        //     ->count();
-        // if(($exists == 1)){
-        //     return response()->json(["errors" => ["message" => "Resource with this name already exist"]], 409);
-        //}
-
-        // $educationalCertificateExists = EducationalCertificate::where('id', $id )->exists();
-        // if(!$educationalCertificateExists) {
-        //     return response()->json(["errors" => ["message" => "Resource does not exist"]], 404);
-        // }
-
-        $educationalCertificateUpdate = EducationalCertificate::where('id', $id)
+        $genderUpdate = Gender::where('id', $id)
             ->update([
                     'name'=> $request->name,
             ]);
 
-        if($educationalCertificateUpdate){
-            return new EducationalCertificateResource(EducationalCertificate::findOrFail($id));
+        if($genderUpdate){
+            return new GenderResource(Gender::findOrFail($id));
         }
     }
 
@@ -120,13 +105,13 @@ class EducationalCertificateController extends Controller
         if(!$adminExists){
             return response()->json(["errors" => ["Unauthorized" => "You are not an admin."]], 401);
         }
-        $educationalCertificate = EducationalCertificate::findOrFail($id);
-        if(!$educationalCertificate->regularUsers){
-            return response()->json(["errors" => ["message" => "Resource is in use by at least a regular User and can't be deleted."]], 409);
+        $gender = Gender::findOrFail($id);
+        if(!$gender->users){
+            return response()->json(["errors" => ["message" => "Resource is in use by at least a User and can't be deleted."]], 409);
         }
 
-        if($educationalCertificate->delete()){
-            return response()->json(["message" => ["EducationalCertificate deleted."]], 201);
+        if($gender->delete()){
+            return response()->json(["message" => ["Gender deleted."]], 201);
         }
     }
 }

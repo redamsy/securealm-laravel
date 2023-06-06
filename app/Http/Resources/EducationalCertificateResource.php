@@ -19,9 +19,15 @@ class EducationalCertificateResource extends JsonResource
         return [
           'id' => $this->id,
           'name' => $this->name,
-        //   $this->mergeWhen($this->needsFullData($request), [
-        //     'regularUsers' => RegularUserResource::collection($this->regularUsers),
-        //   ]),
+          ...($this->regularUsers->count() > 0 ? [
+                'isDeletable'=> false,
+            ] : [
+                'isDeletable'=> true,
+            ]
+          ),
+          $this->mergeWhen($this->needsFullData($request), [
+            'regularUsers' => RegularUserResource::collection($this->regularUsers),
+          ]),
           'createdAt' => $this->created_at,
           'updatedAt' => $this->updated_at,
         ];

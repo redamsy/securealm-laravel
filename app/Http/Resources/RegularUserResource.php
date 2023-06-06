@@ -15,10 +15,16 @@ class RegularUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_id' => $this->user_id,
-            'ruecs' => $this->ruecs,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'id' => $this->user_id,
+            'name' => $this->user->name,
+            'email' => $this->user->email,
+            'isApproved' => $this->user->is_approved,
+            'emailVerifiedAt' => $this->user->email_verified_at,
+            'bloodType' => new BloodTypeResource($this->user->bloodType),
+            'gender' => new GenderResource($this->user->gender),
+            'roleAssignmentDate'=> $this->created_at,
+            'createdAt' => $this->user->created_at,
+            'updatedAt' => $this->user->updated_at,
           ];
     }
 }

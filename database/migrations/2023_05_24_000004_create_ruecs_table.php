@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('educational_certificate_id');
             $table->foreign('educational_certificate_id')->references('id')->on('educational_certificates');
 
+            $table->primary(['regular_user_id', 'educational_certificate_id']);
             $table->timestamps();
         });
     }

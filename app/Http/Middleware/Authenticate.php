@@ -16,6 +16,6 @@ class Authenticate extends Middleware
         if (! $request->expectsJson()) {
             return url(env('SPA_URL') . '/login');
         }
-        return null;
+        return response()->json(['errors' => ['Unauthenticated' => 'Not authenticated.']], 401);;
     }
 }

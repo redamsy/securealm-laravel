@@ -20,7 +20,7 @@ return new class extends Migration
                     'Female',
                     'Other',
                 ]
-            );
+            )->unique();
             $table->timestamps();
         });
     }

@@ -14,6 +14,17 @@ class BloodTypeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+          'id' => $this->id,
+          'name' => $this->name,
+        //   ...($this->users->count() > 0 ? [
+        //         'isDeletable'=> false,
+        //     ] : [
+        //         'isDeletable'=> true,
+        //     ]
+        //   ),
+          'createdAt' => $this->created_at,
+          'updatedAt' => $this->updated_at,
+        ];
     }
 }

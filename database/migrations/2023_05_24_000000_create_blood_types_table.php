@@ -25,7 +25,7 @@ return new class extends Migration
                     'O positive (O+)',
                     'O negative (O-)'
                 ]
-            );
+            )->unique();
             $table->timestamps();
         });
     }
