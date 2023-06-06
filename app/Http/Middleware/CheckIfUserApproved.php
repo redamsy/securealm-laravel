@@ -21,7 +21,6 @@ class CheckIfUserApproved
     {
         Log::info('app/http/middleware/CheckIfUserApproved:', ['new' => '...............................']);
         Log::info('app/http/middleware/CheckIfUserApproved:', ['auth()->check()' => auth()->check()]);
-        Log::info('app/http/middleware/CheckIfUserApproved:', ['2nd if condition' => auth()->check() && (auth()->user()->is_approved == 0)]);
         Log::info('app/http/middleware/CheckIfUserApproved:', ['sanctum/csrf-cookie' => $request->is('sanctum/csrf-cookie')]);
         Log::info('app/http/middleware/CheckIfUserApproved:', ['register' => $request->is('register')]);
         Log::info('app/http/middleware/CheckIfUserApproved:', ['login' => $request->is('login')]);
@@ -35,15 +34,16 @@ class CheckIfUserApproved
         }
 
 
-        if(auth()->check() && (auth()->user()->is_approved == 0)){
-            Log::info('app/http/middleware/CheckIfUserApproved:', ['not_approved' => 'not_approved']);
+        if(auth()->check()){
+            if(auth()->user()->is_approved == 0) {
+                Log::info('app/http/middleware/CheckIfUserApproved:', ['not_approved' => 'not_approved']);
 
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Inactive', 'user' => new UserResource(Auth::user())], 403);
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Inactive', 'user' => new UserResource(Auth::user())], 403);
+                }
+
+                return redirect()->route('login')->with('error', 'Your Account is not active yet, please contact Admin.');
             }
-
-            return redirect()->route('login')->with('error', 'Your Account is not active yet, please contact Admin.');
-
         }
 
         $exists = User::where('email', $request->email)->exists();
@@ -54,17 +54,17 @@ class CheckIfUserApproved
         }
 
         $user = User::where('email', $request->email)->first();
-        Log::info('app/http/middleware/CheckIfUserApproved:', ['4th if condition' => !auth()->check() && ($user->is_approved == 0)]);
 
-        if(!auth()->check() && ($user->is_approved == 0)){
-            Log::info('app/http/middleware/CheckIfUserApproved:', ['not_approved' => 'not_approved']);
+        if(!auth()->check() && $user){
+            if($user->is_approved == 0){
+                Log::info('app/http/middleware/CheckIfUserApproved:', ['not_approved' => 'not_approved']);
 
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Inactive', 'user' => new UserResource($user)], 403);
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Inactive', 'user' => new UserResource($user)], 403);
+                }
+
+                return redirect()->route('login')->with('error', 'Your Account is not active yet, please contact Admin.');
             }
-
-            return redirect()->route('login')->with('error', 'Your Account is not active yet, please contact Admin.');
-
         }
         return $next($request);
     }

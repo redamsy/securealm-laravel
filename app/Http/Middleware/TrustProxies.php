@@ -12,7 +12,7 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = ['host.docker.internal'];
 
     /**
      * The headers that should be used to detect proxies.
