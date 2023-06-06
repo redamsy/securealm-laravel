@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/sanctum/token', TokenController::class);
 
+Route::get('/genderstest',[GenderController::class,'index']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/self', AuthController::class);
     Route::post('/isRequestValid',[AuthController::class,'isRequestValid']);
