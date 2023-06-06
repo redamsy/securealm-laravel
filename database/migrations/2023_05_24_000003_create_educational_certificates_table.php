@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('educational_certificates', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

@@ -31,6 +31,18 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'genderId' => [
+                'required',
+                'integer',
+                'exists:App\Models\Gender,id',
+                // 'exists:genders,id',
+            ],
+            'bloodTypeId' => [
+                'required',
+                'integer',
+                'exists:App\Models\BloodType,id',
+                // 'exists:educational_certificates,id',
+            ],
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
@@ -40,6 +52,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'gender_id' => $input['genderId'],
+                'blood_type_id' => $input['bloodTypeId'],
             ])->save();
         }
     }
@@ -54,6 +68,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
+            'gender_id' => $input['genderId'],
+            'blood_type_id' => $input['bloodTypeId'],
             'email_verified_at' => null,
         ])->save();
 

@@ -25,7 +25,7 @@ class TokenController extends Controller
       'email' => 'required|email',
       'password' => 'required',
       'device_name' => 'required',
-    ]);
+    ])->validate();
 
     $user = User::where('email', $request->email)->first();
 

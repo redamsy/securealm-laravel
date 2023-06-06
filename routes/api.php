@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EducationalCertificateController;
 use App\Http\Controllers\Api\RuecController;
+use App\Http\Controllers\Api\BloodTypeController;
+use App\Http\Controllers\Api\GenderController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\AuthController;
 use App\Models\User;
@@ -26,14 +28,28 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/sanctum/token', TokenController::class);
 
-Route::get('/certificatesTest',[EducationalCertificateController::class,'index']);
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/users/auth', AuthController::class);
+    Route::get('/self', AuthController::class);
+    Route::post('/isRequestValid',[AuthController::class,'isRequestValid']);
+    //
     Route::get('/users',[UserController::class,'index']);
+    Route::post('/setUserTypeAndApproval/{id}',[UserController::class,'setUserTypeAndApproval']);
+    //
     Route::get('/educationalCertificates',[EducationalCertificateController::class,'index']);
     Route::post('/educationalCertificate',[EducationalCertificateController::class,'store']);
     Route::put('/educationalCertificate/{id}',[EducationalCertificateController::class,'update']);
+    Route::delete('/educationalCertificate/{id}',[EducationalCertificateController::class,'destroy']);
+    //
+    Route::get('/genders',[GenderController::class,'index']);
+    Route::post('/educationagenderlCertificate',[GenderController::class,'store']);
+    Route::put('/gender/{id}',[GenderController::class,'update']);
+    Route::delete('/gender/{id}',[GenderController::class,'destroy']);
+    //
+    Route::get('/bloodTypes',[BloodTypeController::class,'index']);
+    //
+    Route::get('/ruecs/{includeUsers}',[RuecController::class,'index']);
     Route::post('/ruec',[RuecController::class,'store']);
+    Route::put('/ruec/batch',[RuecController::class,'updateBatch']);
     // TODO: move this to usercontroller
     Route::get('/users/{id}', function ($id) {
         return User::findOrFail($id);
